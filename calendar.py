@@ -1,7 +1,7 @@
 def display_menu():
     print("Calendar")
     print("1. View all months")
-    print("2. View a specific month")
+    print("2. View specific month")
     print("3. Check if date is weekend")
     print("4. Exit")
 
@@ -22,7 +22,7 @@ def get_month_name(month_num):
 
 def get_days_in_month(month_num):
     if month_num == 1: return 31
-    elif month_num == 2: return 26
+    elif month_num == 2: return 28
     elif month_num == 3: return 31
     elif month_num == 4: return 30
     elif month_num == 5: return 31
@@ -35,8 +35,15 @@ def get_days_in_month(month_num):
     elif month_num == 12: return 31
     else: return 0
 
+def get_start_day(month_num):
+    start_days = {
+        1: 4, 2: 0, 3: 0, 4: 3, 5: 5, 6: 1,
+        7: 3, 8: 6, 9: 2, 10: 4, 11: 0, 12: 2
+    }
+    return start_days.get(month_num, 0)
+
 def display_all_months():
-    print("\n 2026 Calendar.")
+    print("\n 2026 Calendar")
     total = 0
     
     for month_num in range(1, 13):
@@ -44,6 +51,7 @@ def display_all_months():
         days = get_days_in_month(month_num)
         total = total + days
         print(f"{month_num}. {name} - {days} days")
+    
     print(f"Total days: {total}")
 
 def display_month(month_num):
@@ -53,20 +61,29 @@ def display_month(month_num):
     
     name = get_month_name(month_num)
     days = get_days_in_month(month_num)
+    start_day = get_start_day(month_num)
     
     print(f"\n--- {name} 2026 ---")
     print(f"Days: {days}")
+    
     print("\nSun Mon Tue Wed Thu Fri Sat")
+    
+    print("    " * start_day, end="")
     
     for day in range(1, days + 1):
         print(f" {day:2} ", end="")
-        if day % 7 == 0:
+        if (start_day + day) % 7 == 0:
             print()
     print()
 
+def is_weekend(month, day):
+    start_day = get_start_day(month)
+    day_of_week = (start_day + day - 1) % 7
+    return day_of_week == 0 or day_of_week == 6
+
 def check_weekend():
     try:
-        print("\n Weekend Checker")
+        print("\nWeekend Checker")
         month = int(input("Enter month (1-12): "))
         day = int(input("Enter day: "))
         
@@ -79,10 +96,10 @@ def check_weekend():
             print(f"Day must be 1-{max_days}")
             return
         
-        if day <= 7:
-            print(f"Yes, {month}/{day}/2026 is a weekend")
+        if is_weekend(month, day):
+            print(f"Yes, {month}/{day}/2026 is a weekend!")
         else:
-            print(f"No, {month}/{day}/2026 is not a weekend")
+            print(f"No, {month}/{day}/2026 is a weekday.")
             
     except ValueError:
         print("Please enter numbers only")
@@ -108,7 +125,7 @@ def main():
             check_weekend()
             
         elif choice == '4':
-            print("bye")
+            print("Goodbye!")
             break
             
         else:
